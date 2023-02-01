@@ -2,6 +2,7 @@ package app_test
 
 import (
 	"testing"
+	"time"
 
 	appConsumer "github.com/cosmos/interchain-security/app/consumer-democracy"
 	ibctesting "github.com/cosmos/interchain-security/legacy_ibc_testing/testing"
@@ -12,7 +13,12 @@ import (
 func TestDemocracyGovernanceWhitelistingKeys(t *testing.T) {
 	chain := ibctesting.NewTestChain(t, ibctesting.NewCoordinator(t, 0),
 		icstestingutils.DemocracyConsumerAppIniter, "test")
-	paramKeeper := chain.App.(*appConsumer.App).ParamsKeeper
+
+	app := chain.App.(*appConsumer.App)
+	paramKeeper := app.ParamsKeeper
+
+	app.ConsumerKeeper.SetLatestBlockTimeValsetUpdate(chain.GetContext(), time.Now().Add(-(time.Hour * 2)))
+
 	for paramKey := range appConsumer.WhitelistedParams {
 		ss, ok := paramKeeper.GetSubspace(paramKey.Subspace)
 		require.True(t, ok, "Unknown subspace %s", paramKey.Subspace)

@@ -431,3 +431,28 @@ func TestGetAllOutstandingDowntimes(t *testing.T) {
 	require.Len(t, result, len(addresses))
 	require.Equal(t, result, expectedGetAllOrder)
 }
+
+func TestGetLatestBlockTimeValsetUpdate(t *testing.T) {
+	tests := []struct {
+		Name string
+		TM   time.Time
+	}{
+		{
+			Name: "default",
+			TM:   time.Now(),
+		},
+	}
+
+	for _, test := range tests {
+		t.Run(test.Name, func(t *testing.T) {
+			ck, ctx, ctrl, _ := testkeeper.GetConsumerKeeperAndCtx(t, testkeeper.NewInMemKeeperParams(t))
+			defer ctrl.Finish()
+
+			ck.SetLatestBlockTimeValsetUpdate(ctx, test.TM)
+
+			blockTime := ck.GetLatestBlockTimeValsetUpdate(ctx)
+
+			require.Equal(t, test.TM.UnixNano(), blockTime.UnixNano())
+		})
+	}
+}

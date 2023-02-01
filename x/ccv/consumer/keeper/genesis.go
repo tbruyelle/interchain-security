@@ -18,6 +18,10 @@ import (
 //  3. A consumer chain restarts after the CCV channel handshake was completed.
 func (k Keeper) InitGenesis(ctx sdk.Context, state *consumertypes.GenesisState) []abci.ValidatorUpdate {
 	k.SetParams(ctx, state.Params)
+
+	// set block time for expiration
+	k.SetLatestBlockTimeValsetUpdate(ctx, ctx.BlockTime())
+
 	// TODO: Remove enabled flag and find a better way to setup e2e tests
 	// See: https://github.com/cosmos/interchain-security/issues/339
 	if !state.Params.Enabled {

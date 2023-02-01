@@ -18,8 +18,9 @@ These files will be deprecated once ICS is able to upgrade to ibc-go v5.
 */
 
 var (
-	ChainIDPrefix   = "testchain"
-	GlobalStartTime = time.Date(2020, 1, 2, 0, 0, 0, 0, time.UTC)
+	ChainIDPrefix = "testchain"
+	// GlobalStartTime = time.Date(2020, 1, 2, 0, 0, 0, 0, time.UTC)
+	GlobalStartTime = time.Now().Round(time.Hour) //.UTC()
 	TimeIncrement   = time.Second * 5
 )
 

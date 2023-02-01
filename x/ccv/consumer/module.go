@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"math/rand"
+	"time"
 
 	"github.com/gorilla/mux"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
@@ -158,6 +159,25 @@ func (am AppModule) BeginBlock(ctx sdk.Context, req abci.RequestBeginBlock) {
 		channelClosedMsg := fmt.Sprintf("CCV channel %q was closed - shutdown consumer chain since it is not secured anymore", channelID)
 		am.keeper.Logger(ctx).Error(channelClosedMsg)
 		panic(channelClosedMsg)
+	}
+
+	latestValsetUpdated := am.keeper.GetLatestBlockTimeValsetUpdate(ctx)
+	if latestValsetUpdated.IsZero() {
+		// This should never occurs since a time should always be set
+		panic("latest block time an IBC VCS packet is empty")
+	}
+
+	// TODO: move it somewhere else
+	// as params ?
+	const MaxTimeWithoutVCSPacket = time.Hour * 24 * 30
+
+	if ctx.BlockTime().Sub(latestValsetUpdated) >= MaxTimeWithoutVCSPacket {
+		fmt.Printf("[DEBUG] ctx.BlockTime()    : %v\n", ctx.BlockTime())
+		fmt.Printf("[DEBUG] latestValsetUpdated: %v\n", latestValsetUpdated)
+
+		chainMaxTimeWithoutVCSPacketMsg := fmt.Sprintf("chain hasn't received any VSC packet since over %v hours - shutdown consumer chain since it is not secured", MaxTimeWithoutVCSPacket.Hours())
+		am.keeper.Logger(ctx).Error(chainMaxTimeWithoutVCSPacketMsg)
+		panic(chainMaxTimeWithoutVCSPacketMsg)
 	}
 
 	// map next block height to the vscID of the current block height

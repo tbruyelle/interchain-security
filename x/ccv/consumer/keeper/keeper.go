@@ -317,6 +317,36 @@ func (k Keeper) VerifyProviderChain(ctx sdk.Context, connectionHops []string) er
 	return nil
 }
 
+// SetLatestBlockTimeValsetUpdate sets the valset block time for a given
+func (k Keeper) SetLatestBlockTimeValsetUpdate(ctx sdk.Context, blockTime time.Time) {
+	fmt.Println("[DEBUG] SetLatestBlockTimeValsetUpdate ", blockTime)
+	store := ctx.KVStore(k.storeKey)
+
+	valBytes := make([]byte, 8)
+	binary.BigEndian.PutUint64(valBytes, uint64(blockTime.UnixNano()))
+
+	valBytes, err := blockTime.MarshalBinary()
+	if err != nil {
+		panic(fmt.Sprintf("failed to marshall blocktime: %v", err))
+	}
+	store.Set(types.LatestBlockTimeValsetUpdateKey(), valBytes)
+}
+
+// GetLatestBlockTimeValsetUpdate gets the valset update id recorded for a given block height
+func (k Keeper) GetLatestBlockTimeValsetUpdate(ctx sdk.Context) time.Time {
+	store := ctx.KVStore(k.storeKey)
+	bz := store.Get(types.LatestBlockTimeValsetUpdateKey())
+	if bz == nil {
+		return time.Time{}
+	}
+
+	tm := time.Time{}
+	if err := tm.UnmarshalBinary(bz); err != nil {
+		panic(fmt.Sprintf("failed to unmarshall blocktime: %v", err))
+	}
+	return tm
+}
+
 // SetHeightValsetUpdateID sets the valset update id for a given block height
 func (k Keeper) SetHeightValsetUpdateID(ctx sdk.Context, height, valsetUpdateId uint64) {
 	store := ctx.KVStore(k.storeKey)

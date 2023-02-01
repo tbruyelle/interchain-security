@@ -71,6 +71,9 @@ func (k Keeper) OnRecvVSCPacket(ctx sdk.Context, packet channeltypes.Packet, new
 
 	// set height to VSC id mapping
 	blockHeight := uint64(ctx.BlockHeight()) + 1
+
+	k.SetLatestBlockTimeValsetUpdate(ctx, ctx.BlockTime())
+
 	k.SetHeightValsetUpdateID(ctx, blockHeight, newChanges.ValsetUpdateId)
 	k.Logger(ctx).Debug("block height was mapped to vscID", "height", blockHeight, "vscID", newChanges.ValsetUpdateId)
 

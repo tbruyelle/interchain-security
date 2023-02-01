@@ -295,6 +295,7 @@ func TestExportGenesis(t *testing.T) {
 				ck.SetParams(ctx, params)
 
 				ck.AppendPendingPacket(ctx, consPackets.List...)
+				// ck.SetLatestBlockTimeValsetUpdate(ctx, defaultHeightValsetUpdateIDs[0].Height, defaultHeightValsetUpdateIDs[0].ValsetUpdateId)
 				ck.SetHeightValsetUpdateID(ctx, defaultHeightValsetUpdateIDs[0].Height, defaultHeightValsetUpdateIDs[0].ValsetUpdateId)
 
 			},

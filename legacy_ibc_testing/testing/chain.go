@@ -141,6 +141,7 @@ func NewTestChainWithValSet(t *testing.T, coord *Coordinator, appIniter AppInite
 		Height:  1,
 		Time:    coord.CurrentTime.UTC(),
 	}
+	fmt.Println("DEBUG current time", header.Time)
 
 	txConfig := app.GetTxConfig()
 

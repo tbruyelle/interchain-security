@@ -128,6 +128,7 @@ func SetupWithGenesisValSet(t *testing.T, appIniter AppIniter, valSet *tmtypes.V
 	// init chain will set the validator set and initialize the genesis accounts
 	app.InitChain(
 		abci.RequestInitChain{
+			Time:            time.Now(),
 			ChainId:         chainID,
 			Validators:      []abci.ValidatorUpdate{},
 			ConsensusParams: simapp.DefaultConsensusParams,
@@ -142,6 +143,7 @@ func SetupWithGenesisValSet(t *testing.T, appIniter AppIniter, valSet *tmtypes.V
 			Header: tmproto.Header{
 				ChainID:            chainID,
 				Height:             app.LastBlockHeight() + 1,
+				Time:               time.Now(),
 				AppHash:            app.LastCommitID().Hash,
 				ValidatorsHash:     valSet.Hash(),
 				NextValidatorsHash: valSet.Hash(),
