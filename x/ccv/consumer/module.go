@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"math/rand"
-	"time"
 
 	"github.com/gorilla/mux"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
@@ -167,15 +166,13 @@ func (am AppModule) BeginBlock(ctx sdk.Context, req abci.RequestBeginBlock) {
 		panic("latest block time an IBC VCS packet is empty")
 	}
 
-	// TODO: move it somewhere else
-	// as params ?
-	const MaxTimeWithoutVCSPacket = time.Hour * 24 * 7
+	maxTimeWithoutVCSPacket := am.keeper.GetParams(ctx).MaxTimeWithoutVscPacket
 
-	if ctx.BlockTime().Sub(latestValsetUpdated) >= MaxTimeWithoutVCSPacket {
+	if ctx.BlockTime().Sub(latestValsetUpdated) >= maxTimeWithoutVCSPacket {
 		fmt.Printf("[DEBUG] ctx.BlockTime()    : %v\n", ctx.BlockTime())
 		fmt.Printf("[DEBUG] latestValsetUpdated: %v\n", latestValsetUpdated)
 
-		chainMaxTimeWithoutVCSPacketMsg := fmt.Sprintf("chain hasn't received any VSC packet since over %v hours - shutdown consumer chain since it is not secured", MaxTimeWithoutVCSPacket.Hours())
+		chainMaxTimeWithoutVCSPacketMsg := fmt.Sprintf("chain hasn't received any VSC packet since over %v hours - shutdown consumer chain since it is not secured", maxTimeWithoutVCSPacket.Hours())
 		am.keeper.Logger(ctx).Error(chainMaxTimeWithoutVCSPacketMsg)
 		panic(chainMaxTimeWithoutVCSPacketMsg)
 	}

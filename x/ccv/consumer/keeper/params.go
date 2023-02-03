@@ -21,6 +21,7 @@ func (k Keeper) GetParams(ctx sdk.Context) types.Params {
 		k.GetConsumerRedistributionFrac(ctx),
 		k.GetHistoricalEntries(ctx),
 		k.GetUnbondingPeriod(ctx),
+		k.GetMaxTimeWithoutVSCPacket(ctx),
 	)
 }
 
@@ -105,4 +106,10 @@ func (k Keeper) GetUnbondingPeriod(ctx sdk.Context) time.Duration {
 	var period time.Duration
 	k.paramStore.Get(ctx, types.KeyConsumerUnbondingPeriod, &period)
 	return period
+}
+
+func (k Keeper) GetMaxTimeWithoutVSCPacket(ctx sdk.Context) time.Duration {
+	var p time.Duration
+	k.paramStore.Get(ctx, types.KeyMaxTimeWithoutVSCPacket, &p)
+	return p
 }

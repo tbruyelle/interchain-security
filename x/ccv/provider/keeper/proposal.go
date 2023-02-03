@@ -311,6 +311,7 @@ func (k Keeper) MakeConsumerGenesis(
 		prop.ConsumerRedistributionFraction,
 		prop.HistoricalEntries,
 		prop.UnbondingPeriod,
+		consumertypes.DefaultMaxTimeWithoutVSCPacket,
 	)
 
 	gen = *consumertypes.NewInitialGenesisState(

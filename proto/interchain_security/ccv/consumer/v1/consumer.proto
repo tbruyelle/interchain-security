@@ -52,6 +52,11 @@ message Params {
   // which should be smaller than that of the provider in general.
   google.protobuf.Duration unbonding_period = 9
       [(gogoproto.nullable) = false, (gogoproto.stdduration) = true];
+
+  // Maximum amount of time the consumer chain can live without receiving a VSC Packet
+  google.protobuf.Duration max_time_without_vsc_packet = 10
+      [(gogoproto.nullable) = false, (gogoproto.stdduration) = true];
+
 }
 
 // LastTransmissionBlockHeight is the last time validator holding

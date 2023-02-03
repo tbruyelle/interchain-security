@@ -35,6 +35,9 @@ const (
 	// than the default unbonding period on the provider, where the provider uses
 	// the staking module default.
 	DefaultConsumerUnbondingPeriod = stakingtypes.DefaultUnbondingTime - 24*time.Hour
+
+	// Default time where the consumer chain will halt if hasn't received VSC Packet
+	DefaultMaxTimeWithoutVSCPacket = time.Hour * 24 * 10
 )
 
 // Reflection based keys for params subspace
@@ -47,6 +50,7 @@ var (
 	KeyConsumerRedistributionFrac        = []byte("ConsumerRedistributionFraction")
 	KeyHistoricalEntries                 = []byte("HistoricalEntries")
 	KeyConsumerUnbondingPeriod           = []byte("UnbondingPeriod")
+	KeyMaxTimeWithoutVSCPacket           = []byte("MaxTimeWithoutVSCPacket")
 )
 
 // ParamKeyTable type declaration for parameters
@@ -59,7 +63,7 @@ func NewParams(enabled bool, blocksPerDistributionTransmission int64,
 	distributionTransmissionChannel, providerFeePoolAddrStr string,
 	ccvTimeoutPeriod time.Duration, transferTimeoutPeriod time.Duration,
 	consumerRedistributionFraction string, historicalEntries int64,
-	consumerUnbondingPeriod time.Duration) Params {
+	consumerUnbondingPeriod time.Duration, maxTimeWithoutVSCPacket time.Duration) Params {
 	return Params{
 		Enabled:                           enabled,
 		BlocksPerDistributionTransmission: blocksPerDistributionTransmission,
@@ -70,6 +74,7 @@ func NewParams(enabled bool, blocksPerDistributionTransmission int64,
 		ConsumerRedistributionFraction:    consumerRedistributionFraction,
 		HistoricalEntries:                 historicalEntries,
 		UnbondingPeriod:                   consumerUnbondingPeriod,
+		MaxTimeWithoutVscPacket:           maxTimeWithoutVSCPacket,
 	}
 }
 
@@ -85,6 +90,7 @@ func DefaultParams() Params {
 		DefaultConsumerRedistributeFrac,
 		DefaultHistoricalEntries,
 		DefaultConsumerUnbondingPeriod,
+		DefaultMaxTimeWithoutVSCPacket,
 	)
 }
 
@@ -117,6 +123,9 @@ func (p Params) Validate() error {
 	if err := ccvtypes.ValidateDuration(p.UnbondingPeriod); err != nil {
 		return err
 	}
+	if err := ccvtypes.ValidateDuration(p.MaxTimeWithoutVscPacket); err != nil {
+		return err
+	}
 	return nil
 }
 
@@ -140,6 +149,8 @@ func (p *Params) ParamSetPairs() paramtypes.ParamSetPairs {
 			p.HistoricalEntries, ccvtypes.ValidatePositiveInt64),
 		paramtypes.NewParamSetPair(KeyConsumerUnbondingPeriod,
 			p.UnbondingPeriod, ccvtypes.ValidateDuration),
+		paramtypes.NewParamSetPair(KeyMaxTimeWithoutVSCPacket,
+			p.MaxTimeWithoutVscPacket, ccvtypes.ValidateDuration),
 	}
 }
 
