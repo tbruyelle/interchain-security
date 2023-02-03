@@ -1,5 +1,7 @@
 package e2e
 
+import "fmt"
+
 // TestInitTimeout tests the init timeout
 func (suite *CCVTestSuite) TestInitTimeout() {
 	testCases := []struct {
@@ -59,9 +61,12 @@ func (suite *CCVTestSuite) TestInitTimeout() {
 	}
 
 	for i, tc := range testCases {
+		fmt.Println("=======================", tc.name)
 		providerKeeper := suite.providerApp.GetProviderKeeper()
 		initTimeout := providerKeeper.GetParams(suite.providerCtx()).InitTimeoutPeriod
 		chainID := suite.consumerChain.ChainID
+
+		fmt.Println("initTimeout: ", initTimeout)
 
 		// check that the init timeout timestamp is set
 		_, found := providerKeeper.GetInitTimeoutTimestamp(suite.providerCtx(), chainID)

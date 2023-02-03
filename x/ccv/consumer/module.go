@@ -169,7 +169,7 @@ func (am AppModule) BeginBlock(ctx sdk.Context, req abci.RequestBeginBlock) {
 
 	// TODO: move it somewhere else
 	// as params ?
-	const MaxTimeWithoutVCSPacket = time.Hour * 24 * 30
+	const MaxTimeWithoutVCSPacket = time.Hour * 24 * 7
 
 	if ctx.BlockTime().Sub(latestValsetUpdated) >= MaxTimeWithoutVCSPacket {
 		fmt.Printf("[DEBUG] ctx.BlockTime()    : %v\n", ctx.BlockTime())
