@@ -8,14 +8,14 @@ import (
 	evidencetypes "github.com/cosmos/cosmos-sdk/x/evidence/types"
 	slashingtypes "github.com/cosmos/cosmos-sdk/x/slashing/types"
 	ibcclienttypes "github.com/cosmos/ibc-go/v4/modules/core/02-client/types"
+	"github.com/cosmos/interchain-security/app/cmd"
 	appconsumer "github.com/cosmos/interchain-security/app/consumer"
 	"github.com/cosmos/interchain-security/app/consumer/ante"
 	"github.com/stretchr/testify/require"
-	"github.com/tendermint/spm/cosmoscmd"
 )
 
 func TestDisabledModulesDecorator(t *testing.T) {
-	txCfg := cosmoscmd.MakeEncodingConfig(appconsumer.ModuleBasics).TxConfig
+	txCfg := cmd.MakeEncodingConfig(appconsumer.ModuleBasics).TxConfig
 
 	testCases := []struct {
 		name      string

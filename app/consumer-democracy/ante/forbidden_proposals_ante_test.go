@@ -8,14 +8,14 @@ import (
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	"github.com/cosmos/cosmos-sdk/x/params/types/proposal"
+	"github.com/cosmos/interchain-security/app/cmd"
 	app "github.com/cosmos/interchain-security/app/consumer-democracy"
 	"github.com/cosmos/interchain-security/app/consumer-democracy/ante"
 	"github.com/stretchr/testify/require"
-	"github.com/tendermint/spm/cosmoscmd"
 )
 
 func TestForbiddenProposalsDecorator(t *testing.T) {
-	txCfg := cosmoscmd.MakeEncodingConfig(app.ModuleBasics).TxConfig
+	txCfg := cmd.MakeEncodingConfig(app.ModuleBasics).TxConfig
 
 	testCases := []struct {
 		name      string
@@ -28,7 +28,7 @@ func TestForbiddenProposalsDecorator(t *testing.T) {
 			ctx:  sdk.Context{},
 			msgs: []sdk.Msg{
 				newParamChangeProposalMsg([]proposal.ParamChange{
-					//only subspace and key are relevant for testing
+					// only subspace and key are relevant for testing
 					{Subspace: banktypes.ModuleName, Key: "SendEnabled", Value: ""},
 				}),
 			},
