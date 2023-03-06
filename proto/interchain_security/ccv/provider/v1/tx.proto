@@ -7,10 +7,12 @@ import "google/api/annotations.proto";
 import "gogoproto/gogo.proto";
 import "cosmos_proto/cosmos.proto";
 import "google/protobuf/any.proto";
+import "tendermint/types/types.proto";
 
 // Msg defines the Msg service.
 service Msg {
   rpc AssignConsumerKey(MsgAssignConsumerKey) returns (MsgAssignConsumerKeyResponse);
+  rpc SubmitEvidenceDoubleSigning(MsgSubmitEvidenceDoubleSigning) returns (MsgSubmitEvidenceDoubleSigningResponse);
 }
 
 message MsgAssignConsumerKey {
@@ -27,3 +29,13 @@ message MsgAssignConsumerKey {
 }
 
 message MsgAssignConsumerKeyResponse {}
+
+message MsgSubmitEvidenceDoubleSigning {
+  string creator = 1;
+  string chain_id = 2;
+	uint64 validator_set_id = 3;
+  tendermint.types.Vote voteA = 4;
+  tendermint.types.Vote votaB = 5;
+}
+
+message MsgSubmitEvidenceDoubleSigningResponse {}

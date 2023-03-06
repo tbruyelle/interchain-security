@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+	"fmt"
 
 	cryptocodec "github.com/cosmos/cosmos-sdk/crypto/codec"
 	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
@@ -86,4 +87,20 @@ func (k msgServer) AssignConsumerKey(goCtx context.Context, msg *types.MsgAssign
 	})
 
 	return &types.MsgAssignConsumerKeyResponse{}, nil
+}
+
+func (k msgServer) SubmitEvidenceDoubleSigning(goCtx context.Context, msg *types.MsgSubmitEvidenceDoubleSigning) (*types.MsgSubmitEvidenceDoubleSigningResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+	// Find validator set from validator set id
+	height, found := k.GetValsetUpdateBlockHeight(ctx, msg.ValidatorSetId)
+	if !found {
+		return nil, fmt.Errorf("cannot find height for validator set id %d", msg.ValidatorSetId)
+	}
+	_ = height
+	// TODO retrieve validator set for height (request tendermint?)
+	// Then check this validator set is the same as the on in block voteA.Height
+	// or voteB.Height from the consumer chain. This shouldbe possible using the
+	// IBC client VerifyClientMessage function or maybe the higher function
+	// UpdateClient (need to provider a trusted header and a trusted validator set...)
+	return nil, nil
 }
