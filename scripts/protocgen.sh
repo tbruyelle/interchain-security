@@ -4,14 +4,8 @@ set -eo pipefail
 
 echo "Generating gogo proto code"
 cd proto
-proto_dirs=$(find ./interchain_security -path -prune -o -name '*.proto' -print0 | xargs -0 -n1 dirname | sort | uniq)
-for dir in $proto_dirs; do
-  for file in $(find "${dir}" -maxdepth 1 -name '*.proto'); do
-    if grep "option go_package" $file &> /dev/null ; then
-      buf generate --template buf.gen.gogo.yaml $file
-    fi
-  done
-done
+
+buf generate --template buf.gen.gogo.yaml
 
 cd ..
 
@@ -19,4 +13,5 @@ cd ..
 cp -r github.com/cosmos/interchain-security/* ./
 rm -rf github.com
 
-go mod tidy -compat=1.18
+# FIXME with -compat=1.18 it's not working, check why and if it's still needed
+go mod tidy #-compat=1.18
